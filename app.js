@@ -8,6 +8,19 @@ const formulaInput = document.getElementById('formula-input');
 
 const sheetData = {};
 
+const savedData = JSON.parse(localStorage.getItem("spreadsheetData")) || {};
+
+// it also looks like ...
+
+// let savedData =
+//     JSON.parse(localStorage.getItem("spreadsheetData"));
+
+// if(!savedData){
+//     savedData = {};
+// }
+
+const saveBtn = document.getElementById('save-btn');
+
 
 for( let i=0; i<=row; i++){
 
@@ -34,6 +47,13 @@ for( let i=0; i<=row; i++){
             const columnLetter = String.fromCharCode(64+j);
             const cellId = `${columnLetter}${i}`
             cell.dataset.cellId = cellId;
+            
+            // Restore values while creating cells.
+            // cell mein b jyga and sheetData mein b.
+            if(savedData[cellId]){
+                cell.textContent = savedData[cellId];
+                sheetData[cellId] = savedData[cellId];
+            }
 
             cell.contentEditable = true;
 
@@ -91,4 +111,15 @@ formulaInput.addEventListener("input",()=>{
 
 })
 
+
+saveBtn.addEventListener("click",()=>{
+
+    localStorage.setItem(
+        "spreadsheetData",
+        JSON.stringify(sheetData)
+    );
+
+    alert("Spreadsheet Saved!");
+
+});
 
