@@ -1,0 +1,36 @@
+#grid-container{
+    display: grid;
+    grid-template-columns: repeat(11,100px);
+    gap: 0;
+}
+
+.top-left-corner,
+.column-header,
+.row-header,
+.cell{
+    width: 100px;
+    height: 35px;
+    border: 1px solid black;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    box-sizing: border-box;
+}
+
+.top-left-corner,
+.column-header,
+.row-header{
+    background-color: gray;
+    font-weight: bold;
+}
+
+.cell{
+    background-color: white;
+}
+
+h1{
+    display: flex;
+    justify-content: center;
+}
