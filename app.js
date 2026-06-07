@@ -4,6 +4,7 @@ const col = 10;
 const gridContainer = document.getElementById('grid-container');
 const cellInfo = document.getElementById('cell-info');
 let selectedcell = null;
+const formulaInput = document.getElementById('formula-input');
 
 const sheetData = {};
 
@@ -44,14 +45,16 @@ for( let i=0; i<=row; i++){
                 // selected colour changing style
 
                 if(selectedcell){
-                    selectedcell.style.backgroundColor = "white";
+                    selectedcell.classList.remove("selected-cell");
                 }
 
-                e.target.style.backgroundColor = "lightblue";
+                e.target.classList.add("selected-cell");
 
                 selectedcell = e.target;
 
-                console.log(selectedcell);
+                formulaInput.value = e.target.textContent;
+
+                // console.log(selectedcell);
             })
 
             // Step 5: Saves data when a cell is edited
@@ -70,5 +73,22 @@ for( let i=0; i<=row; i++){
 
     }
 }
+
+formulaInput.addEventListener("input",()=>{
+
+    // direct formula bar m changes kiya , kisi cell ko click kre bina.
+    if(!selectedcell) return ;
+
+    // if selectedcell is not empty
+    selectedcell.textContent = formulaInput.value;
+
+    // which cell is selected
+    const cellId = selectedcell.dataset.cellId;
+
+    // if formula bar consists of any value
+    if(formulaInput.value.trim()) sheetData[cellId] = formulaInput.value;
+    else delete sheetData[cellId];
+
+})
 
 
