@@ -1,4 +1,4 @@
-let row = 20;
+
 const col = 10;
 
 const gridContainer = document.getElementById('grid-container');
@@ -9,6 +9,22 @@ const formulaInput = document.getElementById('formula-input');
 const sheetData = {};
 
 const savedData = JSON.parse(localStorage.getItem("spreadsheetData")) || {};
+
+function getMaxRow(savedData){
+    let maxRow = 20;
+    for(let cellId in savedData){
+        const rowNumber = parseInt(cellId.slice(1));
+
+        if(rowNumber > maxRow)
+            maxRow = rowNumber;
+
+    }
+
+    return maxRow;
+}
+
+let row = getMaxRow(savedData);
+
 
 // it also looks like ...
 
