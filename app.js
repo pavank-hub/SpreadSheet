@@ -19,8 +19,6 @@ const savedData = JSON.parse(localStorage.getItem("spreadsheetData")) || {};
 //     savedData = {};
 // }
 
-const saveBtn = document.getElementById('save-btn');
-
 
 for( let i=0; i<=row; i++){
 
@@ -111,6 +109,7 @@ formulaInput.addEventListener("input",()=>{
 
 })
 
+const saveBtn = document.getElementById('save-btn');
 
 saveBtn.addEventListener("click",()=>{
 
@@ -123,3 +122,36 @@ saveBtn.addEventListener("click",()=>{
 
 });
 
+const clearbtn = document.getElementById('clear-btn');
+
+clearbtn.addEventListener("click",()=>{
+
+    // 1. Clear all cells
+    const allCells = document.querySelectorAll(".cell");
+
+    allCells.forEach((cell) => {
+        cell.textContent = "";
+    });
+
+    // 2. Clear Formula Bar
+    formulaInput.value = "";
+
+    // 3. Selected Cell
+    cellInfo.textContent = "Selected Cell:";
+
+    // 4. Make selectedcell to "null"
+    if(selectedcell){
+        selectedcell.classList.remove("selected-cell");
+        selectedcell = null;
+    }
+
+    // 5. Emtpy sheetData
+    for(let key in sheetData){
+        delete sheetData[key];
+    }
+
+    // 6. Remove localStorage
+    localStorage.removeItem("spreadsheetData");
+
+    alert("Spreadsheet Cleared");
+})
