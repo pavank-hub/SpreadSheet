@@ -1,6 +1,3 @@
-
-const col = 10;
-
 const gridContainer = document.getElementById('grid-container');
 const cellInfo = document.getElementById('cell-info');
 let selectedcell = null;
@@ -9,21 +6,38 @@ const formulaInput = document.getElementById('formula-input');
 const sheetData = {};
 
 const savedData = JSON.parse(localStorage.getItem("spreadsheetData")) || {};
+Object.assign(sheetData, savedData);
 
 function getMaxRow(savedData){
+
     let maxRow = 20;
+
     for(let cellId in savedData){
         const rowNumber = parseInt(cellId.slice(1));
 
         if(rowNumber > maxRow)
             maxRow = rowNumber;
-
     }
-
     return maxRow;
 }
 
+function getMaxCol(savedData){
+
+    let maxCol = 10;
+    for(let cellId in savedData){
+
+        const columnLetter = cellId[0];
+
+        const columnNumber = columnLetter.charCodeAt(0) - 64;
+
+        if(columnNumber > maxCol)
+            maxCol = columnNumber;
+    }
+    return maxCol;
+}
+
 let row = getMaxRow(savedData);
+let col = getMaxCol(savedData);
 
 
 // it also looks like ...
@@ -72,9 +86,15 @@ function setupCell(cell, cellId){
             })
         }
         
+// creating renderSpreadsheet()
 
+function renderSpreadsheet(){
 
-for( let i=0; i<=row; i++){
+    // to destroy old grid 
+    gridContainer.innerHTML = "";
+    gridContainer.style.gridTemplateColumns = `repeat(${col+1}, 100px)`;
+
+    for( let i=0; i<=row; i++){
 
     for(let j=0; j<=col; j++){
 
@@ -102,9 +122,8 @@ for( let i=0; i<=row; i++){
             
             // Restore values while creating cells.
             // cell mein b jyga and sheetData mein b.
-            if(savedData[cellId]){
-                cell.textContent = savedData[cellId];
-                sheetData[cellId] = savedData[cellId];
+            if(sheetData[cellId]){
+                cell.textContent = sheetData[cellId];
             }
 
             setupCell(cell,cellId);
@@ -114,6 +133,11 @@ for( let i=0; i<=row; i++){
 
         }
     }
+
+}
+
+renderSpreadsheet();
+
 
 formulaInput.addEventListener("input",()=>{
 
@@ -140,28 +164,18 @@ addRowBtn.addEventListener("click",()=>{
 
     row++;
 
-    const rowHeader = document.createElement("div");
-    // given class = row-header , so every css and js logic will done on this given class "row-header"
-
-    rowHeader.classList.add("row-header");
-    rowHeader.textContent = row;
-
-    gridContainer.appendChild(rowHeader);
-
-    for(let j=1; j<=col; j++){
-
-        const cell = document.createElement("div");
-        cell.classList.add("cell");
-
-        const columnLetter = String.fromCharCode(64+j);
-        const cellId = `${columnLetter}${row}`;
-
-        setupCell(cell, cellId);
-
-        gridContainer.appendChild(cell);
-    }
-
+    renderSpreadsheet();
     // console.log(row);
+})
+
+
+const addColBtn = document.getElementById('add-col-btn');
+
+addColBtn.addEventListener("click", ()=>{
+    col++;
+
+    renderSpreadsheet();
+
 })
 
 
