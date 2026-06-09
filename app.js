@@ -69,7 +69,7 @@ function setupCell(cell, cellId){
 
             selectedcell = e.target;
 
-            formulaInput.value = e.target.textContent;
+            formulaInput.value = sheetData[cellId] || "";
 
             // console.log(selectedcell);
         })
@@ -82,10 +82,50 @@ function setupCell(cell, cellId){
             if(val) sheetData[cellId] = val;
             else delete sheetData[cellId];
 
+            // renderSpreadsheet();
             // console.log(sheetData);
             })
         }
         
+//Make a function to track formulas
+function evaluateFormula(formula){
+
+    if(!formula.startsWith("="))
+        return formula;
+
+    const expression = formula.slice(1);
+
+    // values stores in parts as form of array is key(cellId)
+    // find which operator is it.
+    let operator;
+
+    if(expression.includes("+")) operator = "+";
+    else if(expression.includes("-")) operator = "-";
+    else if(expression.includes("*")) operator = "*";
+    else if(expression.includes("/")) operator = "/";
+    
+    const parts = expression.split(operator);
+
+    const firstCell = parts[0].trim();
+    const secondCell = parts[1].trim();
+
+    // to access data sheetData[cellId] parts[0] , parts[1] are cellId
+    const value1 = Number(sheetData[firstCell]) || 0;
+    const value2 = Number(sheetData[secondCell]) || 0;
+
+    // console.log("Formula:", formula);
+    // console.log("Result:", value1 + value2);
+
+    if(operator === "+") return value1 + value2;
+    if(operator === "-") return value1 - value2;
+    if(operator === "*") return value1 * value2;
+    // maintain , if value2 = 0 then 
+    if(operator === "/") return value2 === 0 ? "Error" : value1/value2;
+    
+}
+
+// console.log(evaluateFormula("=A1+B1"));
+
 // creating renderSpreadsheet()
 
 function renderSpreadsheet(){
@@ -123,7 +163,18 @@ function renderSpreadsheet(){
             // Restore values while creating cells.
             // cell mein b jyga and sheetData mein b.
             if(sheetData[cellId]){
-                cell.textContent = sheetData[cellId];
+                const value = sheetData[cellId];
+
+                console.log(
+                    "Cell:",
+                    cellId,
+                    "Stored:",
+                    value,
+                    "Display:",
+                    evaluateFormula(value)
+                );
+
+                cell.textContent = evaluateFormula(value);
             }
 
             setupCell(cell,cellId);
@@ -139,7 +190,7 @@ function renderSpreadsheet(){
 renderSpreadsheet();
 
 
-formulaInput.addEventListener("input",()=>{
+formulaInput.addEventListener("blur",()=>{
 
     // direct formula bar m changes kiya , kisi cell ko click kre bina.
     if(!selectedcell) return ;
@@ -152,7 +203,9 @@ formulaInput.addEventListener("input",()=>{
 
     // if formula bar consists of any value
     if(formulaInput.value.trim()) sheetData[cellId] = formulaInput.value;
-    else delete sheetData[cellId];
+    else delete sheetData[cellId];  
+
+    renderSpreadsheet();
 
 })
 
@@ -225,3 +278,4 @@ clearbtn.addEventListener("click",()=>{
 
     alert("Spreadsheet Cleared");
 })
+
