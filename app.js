@@ -75,14 +75,14 @@ function setupCell(cell, cellId){
         })
 
         // Step 5: Saves data when a cell is edited
-        cell.addEventListener('input',(e)=>{
+        cell.addEventListener('blur',(e)=>{
             const cellId = e.target.dataset.cellId;
             const val = e.target.textContent.trim();
 
             if(val) sheetData[cellId] = val;
             else delete sheetData[cellId];
 
-            // renderSpreadsheet();
+            renderSpreadsheet();
             // console.log(sheetData);
             })
         }
