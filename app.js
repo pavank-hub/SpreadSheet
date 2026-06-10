@@ -87,11 +87,88 @@ function setupCell(cell, cellId){
             })
         }
         
+
+// =SUM function
+function getRangeValues(range){
+
+    const parts = range.split(":");
+
+    const startCell = parts[0];
+    const endCell = parts[1];
+
+    const columnLetter = startCell[0];
+
+    const startRow = parseInt(startCell.slice(1));
+    const endRow = parseInt(endCell.slice(1));
+
+    const values = [];
+
+    for(let row=startRow; row<=endRow; row++){
+
+        const cellId = `${columnLetter}${row}`;
+        values.push(Number(sheetData[cellId]) || 0);
+    }
+    
+    return values;
+
+}
+
 //Make a function to track formulas
 function evaluateFormula(formula){
 
     if(!formula.startsWith("="))
         return formula;
+
+    // Implementing =SUM() logic
+    if(formula.startsWith("=SUM(")){
+
+        const range = formula.slice(5,-1);
+
+        const values = getRangeValues(range);
+
+        let sum = 0;
+
+        for(let val of values){
+            sum += val;
+        }
+        
+        return sum;
+    }
+
+    // =AVG
+    if(formula.startsWith("=AVG(")){
+
+        const range = formula.slice(5,-1);
+
+        const values = getRangeValues(range);
+
+        let sum = 0;
+        
+        for(let val of values)
+            sum += val;
+
+        return sum/ values.length;
+    }
+
+    // =MIN
+    if(formula.startsWith("=MIN(")){
+
+        const range = formula.slice(5,-1);
+
+        const values = getRangeValues(range);
+
+        return Math.min(...values);
+    }
+
+    // =MAX
+    if(formula.startsWith("=MAX(")){
+
+        const range = formula.slice(5,-1);
+
+        const values = getRangeValues(range);
+
+        return Math.max(...values);
+    }
 
     const expression = formula.slice(1);
 
